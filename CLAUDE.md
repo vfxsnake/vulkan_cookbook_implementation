@@ -9,19 +9,19 @@ This project is an incremental implementation of concepts from "Vulkan 3D Graphi
 ## Reference Documentation
 
 ```
-docs/vulkan_book_reference/
-├── 00_QuickReference.md      # API summary, build commands, common patterns
+VulkanEngine/docs/vulkan_book_reference/
+├── 00_QuickReference.md
 ├── Chapter01_BuildEnvironment.md
 ├── Chapter02_GettingStarted.md
 ├── Chapter03_VulkanObjects.md
-├── Chapter04_DevTools.md
-├── Chapter05_Geometry.md
-├── Chapter06_PBR.md
-├── Chapter07_AdvancedPBR.md
-├── Chapter08_RenderingPipeline.md
-├── Chapter09_Animations.md
-├── Chapter10_ImageTechniques.md
-└── Chapter11_Optimization.md
+├── Chapter04_User_Interaction_Productivity.md
+├── Chapter05_Working_With_Geometry_Data.md
+├── Chapter06_PBR_glTF_Shading.md
+├── Chapter07_Advanced_PBR_Extensions.md
+├── Chapter08_Graphics_Rendering_Pipeline.md
+├── chapter09_Gltf_Animations.md
+├── Chapter10_Image_Based_Techniques.md
+└── Chapter11_Reference.md
 ```
 
 ## Book Repository
@@ -80,12 +80,142 @@ cmake --build . --config Release
 1. Create `.vert`/`.frag` in `shaders/`
 2. Shaders compile at runtime via GLSLang
 
-## Current Progress
+## Working Agreement
 
-Track progress via Git tags:
-- `v0.1-build-environment` - Chapter 1 complete
-- `v0.2-vulkan-basics` - Chapter 2 complete
-- ... (see Vulkan_Learning_Plan.docx)
+This section defines how Claude and the user collaborate on this project.
+
+### Learning-First Approach
+- **User writes all code** — Claude provides step-by-step instructions and guidance
+- **User asks for help when stuck** — Claude doesn't write code unless explicitly requested
+- **Inspect and test early** — User shares code for review, we test as soon as possible
+- **Incremental progress** — Small steps, verify each works before moving on
+
+### Master Learning Plan
+The detailed session breakdown is in **`Vulkan_Learning_Plan.md`** at project root.
+- Contains all sessions (1.1, 1.2, ... 11.6) with goals and test criteria
+- Use this to understand what each session should accomplish
+- Claude references this when planning session tasks
+
+### Reference-Based Learning
+Claude has three reference sources to guide the user:
+
+1. **Book code repo**: `3D-Graphics-Rendering-Cookbook-Second-Edition/`
+   - Actual working code examples from the book
+   - User studies these before implementing their own version
+
+2. **Book chapter summaries**: `VulkanEngine/docs/vulkan_book_reference/`
+   - Markdown extracts with explanations, concepts, and context
+   - Claude points to specific sections for deeper understanding
+
+3. **User's book copy**: Physical/digital PDF
+   - For detailed explanations beyond the summaries
+   - User can look up specific pages/sections as needed
+
+**How it works**:
+- Claude points user to relevant code files AND markdown docs
+- Claude asks comprehension questions to verify understanding
+- User implements based on what they learned
+- This ensures learning through reading real code and explanations, not just following instructions
+
+### Workflow
+1. **Reference**: Claude points to relevant files in `3D-Graphics-Rendering-Cookbook-Second-Edition/` for the user to study
+2. **Comprehension check**: Claude asks questions to verify understanding of the reference code
+3. **Instructions**: Claude gives instructions for the next task (what to create, key concepts)
+4. **Implementation**: User writes the code themselves
+5. **Review**: User shares code, Claude inspects and provides feedback
+6. **Fix**: User addresses any issues
+7. **Test**: Build and run to verify it works
+8. **Next**: Move to next task
+
+### Environment
+- **User builds on**: Windows (Visual Studio 2022)
+- **Claude runs on**: WSL2 (can read files, run commands for inspection)
+- **Build system**: CMake with VS 2022 generator
+
+### Session Continuity
+- This CLAUDE.md file is the source of truth for project state
+- Each session updates the Session Log with progress and next steps
+- When resuming, say: "Let's continue the Vulkan learning plan. Check CLAUDE.md for current progress."
+
+---
+
+## Current Progress & Session Log
+
+**Current session: 1.1 - Environment Setup (IN PROGRESS)**
+**Current milestone: v0.1-build-environment (Chapter 1)**
+
+### How to Resume
+
+When starting a new Claude Code conversation, say:
+> "Let's continue the Vulkan learning plan. Check CLAUDE.md for current progress."
+
+Claude will read this file and pick up where you left off.
+
+### Milestone Checklist
+
+- [ ] `v0.1-build-environment` — Chapter 1: CMake project, GLFW window, shader compilation
+- [ ] `v0.2-vulkan-basics` — Chapter 2: Vulkan init, command buffers, first triangle, 3D transforms
+- [ ] `v0.3-resource-management` — Chapter 3: Buffers, textures, bindless descriptors, mesh loading
+- [ ] `v0.4-dev-tools` — Chapter 4: ImGui, Tracy, camera system, skybox, debug rendering
+- [ ] `v0.5-geometry-pipeline` — Chapter 5: LOD, vertex pulling, instancing, compute, tessellation, indirect draw
+- [ ] `v0.6-pbr-foundation` — Chapter 6: Cook-Torrance BRDF, IBL, BRDF LUT, glTF PBR
+- [ ] `v0.7-advanced-pbr` — Chapter 7: Clearcoat, sheen, transmission, volume, punctual lights
+- [ ] `v0.8-scene-system` — Chapter 8: DOD scene graph, material system, large scenes, editor
+- [ ] `v0.9-animation` — Chapter 9: Node animation, skeletal/GPU skinning, morph targets, blending
+- [ ] `v0.10-post-processing` — Chapter 10: Shadows, MSAA, SSAO, HDR, tone mapping, eye adaptation
+- [ ] `v1.0-complete-engine` — Chapter 11: GPU culling, CSM, OIT, async loading, final integration
+
+### Session Log
+
+Each entry records what was done so the next conversation can continue seamlessly.
+
+#### Session 1.1 — Environment Setup (IN PROGRESS)
+
+**Goal**: Create the basic project structure and get a minimal build compiling before adding Vulkan dependencies.
+
+**Status**: Starting project creation phase
+
+**Prerequisites completed**:
+- [x] Ran `deploy_deps.py` in book repo root — all deps cached/ready
+- [x] Ran `deploy_deps.py` in `deps/src/lightweightvk/` — succeeded (taskflow bootstrap failed but not needed)
+
+**Session 1.1 Checklist**:
+
+Phase A - Minimal Build (no dependencies):
+- [ ] Create `VulkanEngine/src/` directory
+- [ ] Create `VulkanEngine/shaders/` directory
+- [ ] Create `VulkanEngine/CMakeLists.txt` (minimal: cmake version, project, C++20, add_executable)
+- [ ] Create `VulkanEngine/src/main.cpp` (just prints "Hello Vulkan")
+- [ ] Test build with CMake + Visual Studio
+- [ ] Run the executable to verify it works
+
+Phase B - Add GLFW Window:
+- [ ] Add GLFW dependency to CMakeLists.txt
+- [ ] Update main.cpp to create a GLFW window
+- [ ] Build and test window appears
+
+Phase C - Add Vulkan via LightweightVK:
+- [ ] Add LightweightVK dependency to CMakeLists.txt
+- [ ] Add GLM dependency
+- [ ] Update main.cpp with basic Vulkan initialization
+- [ ] Build and test Vulkan context works
+
+Phase D - Shader Compilation:
+- [ ] Add GLSLang dependency
+- [ ] Create a simple vertex/fragment shader
+- [ ] Add runtime shader compilation code
+- [ ] Build and test shaders compile
+
+**Current task**: Phase A - Create project structure and minimal CMakeLists.txt
+
+**Files to create**:
+- `VulkanEngine/CMakeLists.txt`
+- `VulkanEngine/src/main.cpp`
+
+**Next action for user**: Create the directories and files as instructed, then share for review.
+
+---
+*Update this log after each session. Mark sessions DONE and add a summary of what was accomplished, files changed, and any issues encountered.*
 
 ## When Asked About Book Content
 
