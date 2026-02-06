@@ -10,4 +10,12 @@ CMake will be the too for building the project.
 
 ## building commands and configuration:
 
+  cd C:\DEV\vulkan_cookbook_implementation\VulkanEngine                                                                                                                                                                                                                     
+  mkdir build                                                                                                                                                                                                                                                               
+  cd build                                                                                                                                                                                                                                                                  
+  cmake .. -G "Visual Studio 17 2022" -A x64                                                                                                                                                                                                                                
+  cmake --build . --config Release 
 
+
+
+"Let's continue the Vulkan learning plan. Check CLAUDE.md for current progress." 

@@ -173,7 +173,7 @@ Each entry records what was done so the next conversation can continue seamlessl
 
 **Goal**: Create the basic project structure and get a minimal build compiling before adding Vulkan dependencies.
 
-**Status**: Starting project creation phase
+**Status**: Phase A complete, ready for Phase B
 
 **Prerequisites completed**:
 - [x] Ran `deploy_deps.py` in book repo root — all deps cached/ready
@@ -181,13 +181,13 @@ Each entry records what was done so the next conversation can continue seamlessl
 
 **Session 1.1 Checklist**:
 
-Phase A - Minimal Build (no dependencies):
-- [ ] Create `VulkanEngine/src/` directory
-- [ ] Create `VulkanEngine/shaders/` directory
-- [ ] Create `VulkanEngine/CMakeLists.txt` (minimal: cmake version, project, C++20, add_executable)
-- [ ] Create `VulkanEngine/src/main.cpp` (just prints "Hello Vulkan")
-- [ ] Test build with CMake + Visual Studio
-- [ ] Run the executable to verify it works
+Phase A - Minimal Build (no dependencies): **COMPLETE**
+- [x] Create `VulkanEngine/src/` directory
+- [x] Create `VulkanEngine/shaders/` directory
+- [x] Create `VulkanEngine/CMakeLists.txt` (minimal: cmake version, project, C++20, add_executable)
+- [x] Create `VulkanEngine/src/main.cpp` (just prints "Hello Vulkan")
+- [x] Test build with CMake + Visual Studio
+- [x] Run the executable to verify it works
 
 Phase B - Add GLFW Window:
 - [ ] Add GLFW dependency to CMakeLists.txt
@@ -206,7 +206,12 @@ Phase D - Shader Compilation:
 - [ ] Add runtime shader compilation code
 - [ ] Build and test shaders compile
 
-**Current task**: Phase A - Create project structure and minimal CMakeLists.txt
+**Current task**: Phase B - Add GLFW Window
+
+**Session notes**:
+- User studied `Chapter01/01_CMake/CMakeLists.txt` from book repo before implementing
+- Learned CMake build process: `-G` (generator), `-A` (architecture), `--config` (build configuration)
+- Fixed glob pattern issue in add_executable (changed `src/*.cpp` to explicit `src/main.cpp`)
 
 **Files to create**:
 - `VulkanEngine/CMakeLists.txt`
