@@ -165,6 +165,13 @@ Claude will read this file and pick up where you left off.
 - [ ] `v0.10-post-processing` — Chapter 10: Shadows, MSAA, SSAO, HDR, tone mapping, eye adaptation
 - [ ] `v1.0-complete-engine` — Chapter 11: GPU culling, CSM, OIT, async loading, final integration
 
+### Future Tasks (Non-blocking)
+
+These are improvements to tackle after the learning plan is further along:
+
+- [ ] **Migrate dependencies to CMake FetchContent** — Replace relative-path references to the book repo's `deps/` with `FetchContent_Declare`/`FetchContent_MakeAvailable` so the project can fetch its own deps (GLFW, GLM, GLSLang, Assimp, STB, ImGui)
+- [ ] **Add git submodules as an alternative** — Evaluate using git submodules for deps that don't support FetchContent well, so the project is fully self-contained and cloneable
+
 ### Session Log
 
 Each entry records what was done so the next conversation can continue seamlessly.
@@ -189,10 +196,10 @@ Phase A - Minimal Build (no dependencies): **COMPLETE**
 - [x] Test build with CMake + Visual Studio
 - [x] Run the executable to verify it works
 
-Phase B - Add GLFW Window:
-- [ ] Add GLFW dependency to CMakeLists.txt
-- [ ] Update main.cpp to create a GLFW window
-- [ ] Build and test window appears
+Phase B - Add GLFW Window: **COMPLETE**
+- [x] Add GLFW dependency to CMakeLists.txt
+- [x] Update main.cpp to create a GLFW window
+- [x] Build and test window appears
 
 Phase C - Add Vulkan via LightweightVK:
 - [ ] Add LightweightVK dependency to CMakeLists.txt
@@ -206,12 +213,16 @@ Phase D - Shader Compilation:
 - [ ] Add runtime shader compilation code
 - [ ] Build and test shaders compile
 
-**Current task**: Phase B - Add GLFW Window
+**Current task**: Phase C - Add Vulkan via LightweightVK
 
 **Session notes**:
 - User studied `Chapter01/01_CMake/CMakeLists.txt` from book repo before implementing
 - Learned CMake build process: `-G` (generator), `-A` (architecture), `--config` (build configuration)
 - Fixed glob pattern issue in add_executable (changed `src/*.cpp` to explicit `src/main.cpp`)
+- Phase B: User studied `shared/HelpersGLFW.cpp` and `Chapter01/02_GLFW/src/main.cpp` from book repo
+- Learned GLFW_INCLUDE_NONE, GLFW_NO_API, error callbacks vs null checks, glfwSetKeyCallback vs glfwGetKey polling
+- Used `add_subdirectory` with relative path to book repo's GLFW dep (via lightweightvk third-party)
+- Added defensive null checks for glfwInit and glfwCreateWindow
 
 **Files to create**:
 - `VulkanEngine/CMakeLists.txt`
