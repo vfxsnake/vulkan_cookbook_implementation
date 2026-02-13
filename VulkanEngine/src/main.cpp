@@ -1,7 +1,7 @@
 #include <iostream>
 #include <cstdio>
 
-#define GLFW_INCLUDE_NONE  // prevents glfw from pulling openGL headers.
+#include <lvk/LVK.h>
 #include <GLFW/glfw3.h>
 
 
@@ -16,24 +16,12 @@ int main()
         }
     );
 
-
-    if (!glfwInit())
-    {
-        std::cout << "unable to initialize GLFW";
-        return -1;
-    }
-
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-
     const char* title = "Vulkan Engine";
-    GLFWwindow* vulkan_engine_main_window = glfwCreateWindow(800, 600, title, nullptr, nullptr);
-    if (!vulkan_engine_main_window)
-    {
-        std::cout << "create window returned null pointer. aborting.";
-        glfwTerminate();
-        return -1;
-    }    
+    int width = 800;
+    int height = 600;
+    
+    GLFWwindow* vulkan_engine_main_window = lvk::initWindow(title, width, height);
+    std::unique_ptr<lvk::IContext> ctx = lvk::createVulkanContextWithSwapchain(vulkan_engine_main_window, width, height, {});
     
     // press escape callback:
     glfwSetKeyCallback(
@@ -50,9 +38,17 @@ int main()
     while(!glfwWindowShouldClose(vulkan_engine_main_window))
     {
         glfwPollEvents();
+        glfwGetFramebufferSize(vulkan_engine_main_window, &width, &height);
+        if (!width || !height)
+        {
+            continue;
+        }
+        lvk::ICommandBuffer& buf = ctx->acquireCommandBuffer();
+        ctx->submit(buf, ctx->getCurrentSwapchainTexture());
     }
 
     // Cleaning resources
+    ctx.reset();
     glfwDestroyWindow(vulkan_engine_main_window);
     glfwTerminate();
 

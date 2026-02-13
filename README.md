@@ -16,6 +16,7 @@ CMake will be the too for building the project.
   cmake .. -G "Visual Studio 17 2022" -A x64                                                                                                                                                                                                                                
   cmake --build . --config Release 
 
-
+* note for deploying the dependencies form the book, in windows lightweighvk needs to enable long paths with:
+ git config --global core.longpaths true 
 
 "Let's continue the Vulkan learning plan. Check CLAUDE.md for current progress." 

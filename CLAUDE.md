@@ -180,11 +180,11 @@ Each entry records what was done so the next conversation can continue seamlessl
 
 **Goal**: Create the basic project structure and get a minimal build compiling before adding Vulkan dependencies.
 
-**Status**: Phase A complete, ready for Phase B
+**Status**: Phase C complete, Phase D next
 
 **Prerequisites completed**:
 - [x] Ran `deploy_deps.py` in book repo root — all deps cached/ready
-- [x] Ran `deploy_deps.py` in `deps/src/lightweightvk/` — succeeded (taskflow bootstrap failed but not needed)
+- [x] Ran `deploy_deps.py` in `deps/src/lightweightvk/` — fixed by enabling `git config --global core.longpaths true` and re-running
 
 **Session 1.1 Checklist**:
 
@@ -201,11 +201,11 @@ Phase B - Add GLFW Window: **COMPLETE**
 - [x] Update main.cpp to create a GLFW window
 - [x] Build and test window appears
 
-Phase C - Add Vulkan via LightweightVK:
-- [ ] Add LightweightVK dependency to CMakeLists.txt
-- [ ] Add GLM dependency
-- [ ] Update main.cpp with basic Vulkan initialization
-- [ ] Build and test Vulkan context works
+Phase C - Add Vulkan via LightweightVK: **COMPLETE**
+- [x] Add LightweightVK dependency to CMakeLists.txt
+- [x] Add GLM dependency
+- [x] Update main.cpp with basic Vulkan initialization
+- [x] Build and test Vulkan context works
 
 Phase D - Shader Compilation:
 - [ ] Add GLSLang dependency
@@ -213,7 +213,7 @@ Phase D - Shader Compilation:
 - [ ] Add runtime shader compilation code
 - [ ] Build and test shaders compile
 
-**Current task**: Phase C - Add Vulkan via LightweightVK
+**Current task**: Phase D - Shader Compilation
 
 **Session notes**:
 - User studied `Chapter01/01_CMake/CMakeLists.txt` from book repo before implementing
@@ -223,12 +223,19 @@ Phase D - Shader Compilation:
 - Learned GLFW_INCLUDE_NONE, GLFW_NO_API, error callbacks vs null checks, glfwSetKeyCallback vs glfwGetKey polling
 - Used `add_subdirectory` with relative path to book repo's GLFW dep (via lightweightvk third-party)
 - Added defensive null checks for glfwInit and glfwCreateWindow
+- Phase C: User studied `Chapter02/01_Swapchain/src/main.cpp`, book root `CMakeLists.txt`, and `shared/CMakeLists.txt`
+- Learned distinction between `add_subdirectory` binary dir alias vs CMake link target (`LVKLibrary`)
+- Learned `lvk::initWindow()` replaces manual GLFW init, `lvk::createVulkanContextWithSwapchain()` creates Vulkan context
+- LVK link target is `LVKLibrary` (not `lightweightvk`)
+- GLM needs explicit include path + `GLM_ENABLE_EXPERIMENTAL` definition
+- Tracy disabled for now (LVK_WITH_TRACY OFF, LVK_WITH_TRACY_GPU OFF)
+- Phase C build fix: `deploy_deps.py` was failing on `taskflow` due to Windows 260-char path limit. Fixed with `git config --global core.longpaths true`, deleting broken taskflow clone, and re-running script. All LVK deps (minilog, imgui, volk, vma, vulkan-headers, ldrutils) then cloned successfully.
 
-**Files to create**:
-- `VulkanEngine/CMakeLists.txt`
-- `VulkanEngine/src/main.cpp`
+**Files modified**:
+- `VulkanEngine/CMakeLists.txt` — added LVK, GLM, definitions
+- `VulkanEngine/src/main.cpp` — replaced GLFW init with LVK calls, added render loop with command buffer
 
-**Next action for user**: Create the directories and files as instructed, then share for review.
+**Next action for user**: Start Phase D — Shader Compilation
 
 ---
 *Update this log after each session. Mark sessions DONE and add a summary of what was accomplished, files changed, and any issues encountered.*
