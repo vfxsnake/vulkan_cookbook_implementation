@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/3D-Graphics-Rendering-Cookbook-Second-Edition/deps/src/lightweightvk/",
+                "${workspaceFolder}/3D-Graphics-Rendering-Cookbook-Second-Edition/deps/src/lightweightvk/third-party/deps/src/glfw/include",
+                "${workspaceFolder}/3D-Graphics-Rendering-Cookbook-Second-Edition/deps/src/lightweightvk/third-party/deps/src/glm",
+                "${workspaceFolder}/3D-Graphics-Rendering-Cookbook-Second-Edition/deps/src/lightweightvk/third-party/deps/src/vulkan-headers/include",
+                "${workspaceFolder}/3D-Graphics-Rendering-Cookbook-Second-Edition/deps/src/lightweightvk/third-party/deps/src/volk"
+                
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c17",
+            "cppStandard": "c++20",
+            "intelliSenseMode": "linux-gcc-x64"
+        }
+    ],
+    "version": 4
+}

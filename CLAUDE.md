@@ -180,7 +180,7 @@ Each entry records what was done so the next conversation can continue seamlessl
 
 **Goal**: Create the basic project structure and get a minimal build compiling before adding Vulkan dependencies.
 
-**Status**: Phase C complete, Phase D next
+**Status**: Phase D in progress — shaders created, shader loading implemented, render pipeline + draw commands next
 
 **Prerequisites completed**:
 - [x] Ran `deploy_deps.py` in book repo root — all deps cached/ready
@@ -208,10 +208,13 @@ Phase C - Add Vulkan via LightweightVK: **COMPLETE**
 - [x] Build and test Vulkan context works
 
 Phase D - Shader Compilation:
-- [ ] Add GLSLang dependency
-- [ ] Create a simple vertex/fragment shader
-- [ ] Add runtime shader compilation code
-- [ ] Build and test shaders compile
+- [x] Study reference code (Chapter01/04_GLSLang, shared/Utils.cpp, Chapter02/02_HelloTriangle)
+- [x] Comprehension questions completed
+- [x] Create vertex/fragment shaders in `VulkanEngine/shaders/`
+- [x] Add `readShaderFile()` and `loadShaderModule()` helpers to main.cpp
+- [ ] Create render pipeline with both shader modules
+- [ ] Add draw commands in render loop (cmdBeginRendering, cmdBindRenderPipeline, cmdDraw, cmdEndRendering)
+- [ ] Build and test — triangle renders on screen
 
 **Current task**: Phase D - Shader Compilation
 
@@ -235,7 +238,29 @@ Phase D - Shader Compilation:
 - `VulkanEngine/CMakeLists.txt` — added LVK, GLM, definitions
 - `VulkanEngine/src/main.cpp` — replaced GLFW init with LVK calls, added render loop with command buffer
 
-**Next action for user**: Start Phase D — Shader Compilation
+**Key learnings from Phase D study**:
+- GLSLang is already bundled inside LVK — no separate CMake dependency needed
+- `ctx->createShaderModule()` auto-detects GLSL vs SPIR-V based on `desc.dataSize` (0 = GLSL text, >0 = SPIR-V binary)
+- `readShaderFile()` in shared/Utils.cpp supports recursive `#include` resolution
+- `lvk::Holder<>` provides RAII cleanup for Vulkan resources (like `std::unique_ptr` for GPU handles)
+- Need both vertex + fragment shader modules to create a `RenderPipelineDesc`
+
+**Key learnings from Phase D implementation**:
+- `ShaderModuleDesc` has explicit constructors → NOT an aggregate → designated initializers `{.field=...}` don't work, must use positional constructor: `{source, stage, debugName}`
+- C++20 designated initializers only work on aggregate types (no user-defined constructors, no private members, no virtual functions)
+- Runtime shader compilation (GLSL text → SPIR-V at startup) vs pre-compiled (offline `.spv` binary): LVK handles runtime compilation via GLSLang internally when `dataSize == 0`
+- Shader paths are relative to working directory at runtime — plan accordingly
+- Added naming convention to Code Style section (PascalCase types, camelCase methods/members, snake_case locals/params)
+
+**Files modified this session**:
+- `VulkanEngine/shaders/triangle.vert` — vertex shader with hardcoded triangle positions + per-vertex RGB colors
+- `VulkanEngine/shaders/triangle.frag` — fragment shader with color interpolation
+- `VulkanEngine/src/main.cpp` — added `readShaderFile()`, shader module loading with `lvk::Holder`
+- `.vscode/c_cpp_properties.json` — updated include paths for IntelliSense
+- `CLAUDE.md` — added naming convention to Code Style
+
+**Next action for user**: Implement render pipeline (`RenderPipelineDesc`) and draw commands (`cmdBeginRendering`, `cmdBindRenderPipeline`, `cmdDraw`, `cmdEndRendering`)
+**Reference files to follow**: `Chapter02/02_HelloTriangle/src/main.cpp`
 
 ---
 *Update this log after each session. Mark sessions DONE and add a summary of what was accomplished, files changed, and any issues encountered.*
@@ -251,6 +276,23 @@ If the user asks about specific book topics:
    - Provide guidance based on available reference docs
 
 ## Code Style
+
+**ENFORCE THIS CONVENTION THROUGHOUT THE ENTIRE PROJECT. All code reviews must check for naming consistency.**
+
+### Naming Convention
+
+| Element | Style | Example |
+|---|---|---|
+| Classes, Types, Structs | PascalCase | `ShaderLoader`, `RenderState` |
+| Functions, Methods | camelCase | `readShaderFile()`, `loadModule()` |
+| Member variables | camelCase | `windowWidth`, `shaderCode` |
+| Local variables | snake_case | `file_size`, `shader_source` |
+| Parameters | snake_case | `file_path`, `stage_flags` |
+
+- Member variables use camelCase to visually distinguish them from local variables (snake_case) without needing `m_` prefixes
+- This convention aligns with LVK's API style (PascalCase types, camelCase methods)
+
+### General Style
 
 - C++20 features (designated initializers, concepts)
 - Use `lvk::` namespace for LightweightVK types
