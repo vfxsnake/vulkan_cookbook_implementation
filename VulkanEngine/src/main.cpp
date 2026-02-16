@@ -87,7 +87,14 @@ int main()
         nullptr
     );
 
-    
+    // creating the render pipeline
+    lvk::Holder<lvk::RenderPipelineHandle> triangle_rendering_pipeline = ctx->createRenderPipeline(
+        {
+            .smVert = vertex_handle,
+            .smFrag = fragment_handle,
+            .color = { {.format = ctx->getSwapchainFormat()} },
+        }
+    );
 
     // press escape callback:
     glfwSetKeyCallback(
@@ -109,8 +116,20 @@ int main()
         {
             continue;
         }
-        lvk::ICommandBuffer& buf = ctx->acquireCommandBuffer();
-        ctx->submit(buf, ctx->getCurrentSwapchainTexture());
+        lvk::ICommandBuffer& render_buffer = ctx->acquireCommandBuffer();
+
+        // draw commands
+        render_buffer.cmdBeginRendering(
+            {.color = {{.loadOp = lvk::LoadOp_Clear, .clearColor = {0.01f, 0.01f, 0.01f, 1.0f}}}},
+            {.color = {{.texture = ctx->getCurrentSwapchainTexture()}}}
+        );
+
+        render_buffer.cmdBindRenderPipeline(triangle_rendering_pipeline);
+        render_buffer.cmdDraw(3);
+        render_buffer.cmdEndRendering();
+
+
+        ctx->submit(render_buffer, ctx->getCurrentSwapchainTexture());
     }
 
     // Cleaning resources

@@ -117,7 +117,24 @@ Claude has three reference sources to guide the user:
 - User implements based on what they learned
 - This ensures learning through reading real code and explanations, not just following instructions
 
-### Workflow
+### Chapter Review Process (Before Starting Any Chapter)
+
+When beginning a new chapter, follow these steps **before any implementation**:
+
+1. **Check Learning Plan**: Read the chapter section in `Vulkan_Learning_Plan.md` — note the session breakdown, key concepts, and milestone goals
+2. **Check Book Reference**: Read the corresponding `docs/vulkan_book_reference/ChapterXX_*.md` — identify all topics covered
+3. **Gap Analysis**: Compare what the learning plan expects vs what the book reference covers. Identify:
+   - Topics already completed from previous sessions
+   - Topics in the book reference that the learning plan doesn't explicitly mention (these may still be relevant)
+   - Topics that are not relevant yet (future chapters will cover them)
+4. **Record Chapter Scope**: Add a "Chapter X Scope" entry to the Session Log listing:
+   - What must be covered (from learning plan + book reference)
+   - What was already done
+   - What is deferred to later chapters
+5. **Then proceed** with the per-session workflow below
+
+### Per-Session Workflow
+
 1. **Reference**: Claude points to relevant files in `3D-Graphics-Rendering-Cookbook-Second-Edition/` for the user to study
 2. **Comprehension check**: Claude asks questions to verify understanding of the reference code
 3. **Instructions**: Claude gives instructions for the next task (what to create, key concepts)
@@ -141,7 +158,7 @@ Claude has three reference sources to guide the user:
 
 ## Current Progress & Session Log
 
-**Current session: 1.1 - Environment Setup (IN PROGRESS)**
+**Current session: 1.2 - (NEXT)**
 **Current milestone: v0.1-build-environment (Chapter 1)**
 
 ### How to Resume
@@ -172,15 +189,32 @@ These are improvements to tackle after the learning plan is further along:
 - [ ] **Migrate dependencies to CMake FetchContent** — Replace relative-path references to the book repo's `deps/` with `FetchContent_Declare`/`FetchContent_MakeAvailable` so the project can fetch its own deps (GLFW, GLM, GLSLang, Assimp, STB, ImGui)
 - [ ] **Add git submodules as an alternative** — Evaluate using git submodules for deps that don't support FetchContent well, so the project is fully self-contained and cloneable
 
+### Chapter Scopes
+
+#### Chapter 1 Scope — Build Environment
+
+**From Learning Plan**: CMake setup, GLFW window + input, GLSLang runtime shader compilation
+**From Book Reference** (`Chapter01_BuildEnvironment.md`):
+- [x] CMake project configuration (`SETUP_APP` macro patterns, C++20, generators)
+- [x] GLFW window creation (`GLFW_NO_API`, event loop)
+- [x] GLSLang runtime shader compilation (handled internally by LVK)
+- [ ] `VS_DEBUGGER_WORKING_DIRECTORY` — set debugger working directory so shader paths are relative to project root *(missed, fixing now)*
+- [ ] `SETUP_GROUPS` macro — organize source files into VS Solution Explorer folders *(deferred, only 1 source file currently)*
+- [ ] Output name per build config (`_Debug`, `_Release` suffixes) *(deferred, nice-to-have)*
+- Taskflow multithreading — **deferred to Chapter 11** (async loading)
+- BC7 texture compression — **deferred to Chapter 3** (textures)
+
+---
+
 ### Session Log
 
 Each entry records what was done so the next conversation can continue seamlessly.
 
-#### Session 1.1 — Environment Setup (IN PROGRESS)
+#### Session 1.1 — Environment Setup (DONE)
 
 **Goal**: Create the basic project structure and get a minimal build compiling before adding Vulkan dependencies.
 
-**Status**: Phase D in progress — shaders created, shader loading implemented, render pipeline + draw commands next
+**Status**: COMPLETE — all phases done, triangle rendering on screen
 
 **Prerequisites completed**:
 - [x] Ran `deploy_deps.py` in book repo root — all deps cached/ready
@@ -207,16 +241,14 @@ Phase C - Add Vulkan via LightweightVK: **COMPLETE**
 - [x] Update main.cpp with basic Vulkan initialization
 - [x] Build and test Vulkan context works
 
-Phase D - Shader Compilation:
+Phase D - Shader Compilation: **COMPLETE**
 - [x] Study reference code (Chapter01/04_GLSLang, shared/Utils.cpp, Chapter02/02_HelloTriangle)
 - [x] Comprehension questions completed
 - [x] Create vertex/fragment shaders in `VulkanEngine/shaders/`
 - [x] Add `readShaderFile()` and `loadShaderModule()` helpers to main.cpp
-- [ ] Create render pipeline with both shader modules
-- [ ] Add draw commands in render loop (cmdBeginRendering, cmdBindRenderPipeline, cmdDraw, cmdEndRendering)
-- [ ] Build and test — triangle renders on screen
-
-**Current task**: Phase D - Shader Compilation
+- [x] Create render pipeline with both shader modules
+- [x] Add draw commands in render loop (cmdBeginRendering, cmdBindRenderPipeline, cmdDraw, cmdEndRendering)
+- [x] Build and test — triangle renders on screen
 
 **Session notes**:
 - User studied `Chapter01/01_CMake/CMakeLists.txt` from book repo before implementing
@@ -259,8 +291,15 @@ Phase D - Shader Compilation:
 - `.vscode/c_cpp_properties.json` — updated include paths for IntelliSense
 - `CLAUDE.md` — added naming convention to Code Style
 
-**Next action for user**: Implement render pipeline (`RenderPipelineDesc`) and draw commands (`cmdBeginRendering`, `cmdBindRenderPipeline`, `cmdDraw`, `cmdEndRendering`)
-**Reference files to follow**: `Chapter02/02_HelloTriangle/src/main.cpp`
+**Phase D final learnings**:
+- `RenderPipelineDesc` uses designated initializers: `.smVert`, `.smFrag`, `.color` with swapchain format
+- Draw command sequence: `cmdBeginRendering` → `cmdBindRenderPipeline` → `cmdDraw` → `cmdEndRendering`
+- `cmdBeginRendering` takes a `RenderPass` (load op + clear color) and a `Framebuffer` (target texture)
+- `LoadOp_Clear` fills the framebuffer with `clearColor` before drawing; `LoadOp_Load` preserves previous contents
+- Debug label commands (`cmdPushDebugGroupLabel`/`cmdPopDebugGroupLabel`) are optional, for tools like RenderDoc
+- Known issue: validation layer warnings on shutdown about undestroyed shader modules — holders are destroyed after `ctx.reset()`. Fix later with scoped `{}` block or explicit holder reset.
+
+**Next session**: 1.2 — check `Vulkan_Learning_Plan.md` for goals
 
 ---
 *Update this log after each session. Mark sessions DONE and add a summary of what was accomplished, files changed, and any issues encountered.*
