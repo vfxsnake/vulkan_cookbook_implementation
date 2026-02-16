@@ -158,8 +158,8 @@ When beginning a new chapter, follow these steps **before any implementation**:
 
 ## Current Progress & Session Log
 
-**Current session: 1.2 - (NEXT)**
-**Current milestone: v0.1-build-environment (Chapter 1)**
+**Current session: 2.1 (NEXT)**
+**Current milestone: v0.2-vulkan-basics (Chapter 2)**
 
 ### How to Resume
 
@@ -170,7 +170,7 @@ Claude will read this file and pick up where you left off.
 
 ### Milestone Checklist
 
-- [ ] `v0.1-build-environment` — Chapter 1: CMake project, GLFW window, shader compilation
+- [x] `v0.1-build-environment` — Chapter 1: CMake project, GLFW window, shader compilation
 - [ ] `v0.2-vulkan-basics` — Chapter 2: Vulkan init, command buffers, first triangle, 3D transforms
 - [ ] `v0.3-resource-management` — Chapter 3: Buffers, textures, bindless descriptors, mesh loading
 - [ ] `v0.4-dev-tools` — Chapter 4: ImGui, Tracy, camera system, skybox, debug rendering
@@ -198,11 +198,37 @@ These are improvements to tackle after the learning plan is further along:
 - [x] CMake project configuration (`SETUP_APP` macro patterns, C++20, generators)
 - [x] GLFW window creation (`GLFW_NO_API`, event loop)
 - [x] GLSLang runtime shader compilation (handled internally by LVK)
-- [ ] `VS_DEBUGGER_WORKING_DIRECTORY` — set debugger working directory so shader paths are relative to project root *(missed, fixing now)*
+- [x] `VS_DEBUGGER_WORKING_DIRECTORY` — set debugger working directory so shader paths are relative to project root
 - [ ] `SETUP_GROUPS` macro — organize source files into VS Solution Explorer folders *(deferred, only 1 source file currently)*
 - [ ] Output name per build config (`_Debug`, `_Release` suffixes) *(deferred, nice-to-have)*
 - Taskflow multithreading — **deferred to Chapter 11** (async loading)
 - BC7 texture compression — **deferred to Chapter 3** (textures)
+
+#### Chapter 2 Scope — Getting Started with Vulkan
+
+**From Learning Plan**: VulkanRenderer class, command buffer management, first triangle, GLM transforms, 3D cube
+**From Book Reference** (`Chapter02_GettingStarted.md`):
+- [ ] Vulkan instance + device creation (LVK internals study)
+- [ ] Swapchain management (surface capabilities, formats, present modes)
+- [ ] Debugging (VK_EXT_debug_utils, validation callback, object naming)
+- [ ] Command buffers (VulkanImmediateCommands, fences, semaphores, synchronization)
+- [ ] Shader modules (loadShaderModule pattern, SPIRV-Reflect for push constants)
+- [ ] Pipelines (VulkanPipelineBuilder, dynamic state, RenderPipelineDesc internals)
+- [ ] GLM integration + MVP transforms (push constants)
+- [ ] 3D cube with depth buffer and perspective projection
+
+**Already done** (from Session 1.1):
+- [x] Vulkan context + swapchain creation
+- [x] Command buffer acquire/submit loop
+- [x] Shader loading + render pipeline
+- [x] Triangle rendering
+- [x] Validation layers (LVK default)
+
+**Restructured sessions**:
+- 2.1 — Deep study of LVK internals (instance, device, queues, cmd buffers, pipelines). Comprehension only.
+- 2.2 — Refactor: extract VulkanApp base class to reduce main.cpp boilerplate
+- 2.3 — Push constants + GLM transforms (rotating triangle)
+- 2.4 — 3D cube with depth buffer + perspective projection
 
 ---
 
@@ -299,7 +325,35 @@ Phase D - Shader Compilation: **COMPLETE**
 - Debug label commands (`cmdPushDebugGroupLabel`/`cmdPopDebugGroupLabel`) are optional, for tools like RenderDoc
 - Known issue: validation layer warnings on shutdown about undestroyed shader modules — holders are destroyed after `ctx.reset()`. Fix later with scoped `{}` block or explicit holder reset.
 
-**Next session**: 1.2 — check `Vulkan_Learning_Plan.md` for goals
+**Next session**: 2.1 — Chapter 2 review + Vulkan Context
+
+#### Session 1.2 — Debugger & Cleanup (DONE)
+
+**Goal**: Fix VS_DEBUGGER_WORKING_DIRECTORY, set up VS Code debugging, close out v0.1 milestone.
+
+**Status**: COMPLETE
+
+**Session 1.2 Checklist**:
+- [x] Added `set_property(TARGET vulkan_engine PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")` to CMakeLists.txt
+- [x] Created `.vscode/launch.json` with `cppvsdbg` config for Windows debugging
+- [x] Updated shader paths from `"../../shaders/..."` to `"shaders/..."` (relative to project root)
+- [x] Build and test — triangle renders, debugger launches correctly
+
+**Files modified**:
+- `VulkanEngine/CMakeLists.txt` — added VS_DEBUGGER_WORKING_DIRECTORY property
+- `VulkanEngine/src/main.cpp` — updated shader paths to be relative to project root
+- `.vscode/launch.json` — new file, VS Code debug configuration
+
+**Key learnings**:
+- `VS_DEBUGGER_WORKING_DIRECTORY` is a Visual Studio IDE-only property, has no effect on VS Code
+- VS Code debugging uses `.vscode/launch.json` with `"cwd"` field to set working directory
+- `"type": "cppvsdbg"` uses the MSVC debugger (matches VS 2022 build toolchain)
+- `${workspaceRoot}` is deprecated in VS Code, use `${workspaceFolder}` instead
+- `set_property` must come after `add_executable` — target must exist first
+
+**Milestone v0.1-build-environment: COMPLETE**
+
+**Next session**: 2.1 — Chapter 2 review + Vulkan Context
 
 ---
 *Update this log after each session. Mark sessions DONE and add a summary of what was accomplished, files changed, and any issues encountered.*

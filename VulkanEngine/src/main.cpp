@@ -52,14 +52,14 @@ int main()
     );
     
     // calling shaders
-    const char* vertex_shader_path = "../../shaders/triangle.vert";
+    const char* vertex_shader_path = "shaders/triangle.vert";
     std::string vertex_shader = readShaderFile(vertex_shader_path);
     if (vertex_shader.empty())
     {
         throw std::runtime_error("Failed to load the vertex shader." );
     }
 
-    const char* fragment_shader_path = "../../shaders/triangle.frag";
+    const char* fragment_shader_path = "shaders/triangle.frag";
     std::string fragment_shader = readShaderFile(fragment_shader_path);
     if (fragment_shader.empty())
     {

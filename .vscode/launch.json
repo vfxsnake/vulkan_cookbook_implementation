@@ -1,0 +1,14 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug VulkanEngine",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/VulkanEngine/build/Release/vulkan_engine.exe",
+            "args": [],
+            "cwd": "${workspaceFolder}/VulkanEngine",
+            "console": "integratedTerminal"
+        }
+    ]
+}
