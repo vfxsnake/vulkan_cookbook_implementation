@@ -117,6 +117,20 @@ Claude has three reference sources to guide the user:
 - User implements based on what they learned
 - This ensures learning through reading real code and explanations, not just following instructions
 
+### Study Notes Workflow
+
+For comprehension-only sessions (e.g., 2.1), a `docs/session_X_Y_study_notes.md` file is kept per session.
+
+**Process**:
+1. User studies the chapter materials (book reference docs + book repo code)
+2. Claude runs comprehension questions on each topic
+3. **Claude fills in the study notes** based on the user's answers, with any necessary corrections embedded as `> blockquote` callouts
+4. Repeat for each topic until all sections are complete
+
+The notes are **not written by the user** — they are authored by Claude after the comprehension questions, so the notes reflect verified understanding rather than pre-study guesses.
+
+When a session's notes already have some topics filled in at the start of a new conversation, it means those topics were completed with comprehension questions at the **end of the previous session** — this is the normal workflow, not an exception.
+
 ### Chapter Review Process (Before Starting Any Chapter)
 
 When beginning a new chapter, follow these steps **before any implementation**:
@@ -158,7 +172,7 @@ When beginning a new chapter, follow these steps **before any implementation**:
 
 ## Current Progress & Session Log
 
-**Current session: 2.1 (NEXT)**
+**Current session: 2.1 (IN PROGRESS — Topics 3–5 remaining)**
 **Current milestone: v0.2-vulkan-basics (Chapter 2)**
 
 ### How to Resume
@@ -208,8 +222,8 @@ These are improvements to tackle after the learning plan is further along:
 
 **From Learning Plan**: VulkanRenderer class, command buffer management, first triangle, GLM transforms, 3D cube
 **From Book Reference** (`Chapter02_GettingStarted.md`):
-- [ ] Vulkan instance + device creation (LVK internals study)
-- [ ] Swapchain management (surface capabilities, formats, present modes)
+- [x] Vulkan instance + device creation (LVK internals study)
+- [x] Swapchain management (surface capabilities, formats, present modes)
 - [ ] Debugging (VK_EXT_debug_utils, validation callback, object naming)
 - [ ] Command buffers (VulkanImmediateCommands, fences, semaphores, synchronization)
 - [ ] Shader modules (loadShaderModule pattern, SPIRV-Reflect for push constants)
